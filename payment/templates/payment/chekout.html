@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+        <!-- Header-->
+        <header class="bg-dark py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-white">
+                    <h1 class="display-4 fw-bolder">صورتحساب</h1>
+                    {% comment %} <p class="lead fw-normal text-white-50 mb-0">سفیر سلامتی</p> {% endcomment %}
+                </div>
+            </div>
+        </header>
+        <br>
+            <div class="container">
+            <div class= "row">
+                <center>
+                    <div class="col-8">
+                        <div class="card">
+                            <div class="card-header">
+                                خلاصه سفارشات شما
+                            </div>
+                            <div class="card-body">
+
+                                {% for product in cart_products %}
+                                    {{ product.name }}
+                                    <small>
+                                        {% if product.is_sale %}
+                                            <p class="card-text"> قیمت: <strike>{{ product.price | intcomma }}</strike> - {{ product.sale_price | intcomma }}</p>
+                                        {% else %}
+                                            <p class="card-text"> قیمت: {{ product.price | intcomma }}</p>
+                                        {% endif %}
+                                        
+                                        تعداد:
+                                        {% for key,value in quantities.items %}
+                                            {% if key == product.id|slugify %}
+                                                {{ value }}<br>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </small>
+                                    <hr>
+                                {% endfor %}
+                                <strong>مجموع کل سفارشات {{ total | intcomma}}</strong><br>
+                                <a href="{% url 'cart_summary' %}" class="btn btn-sm btn-outline-secondary">ویرایش سبد خرید</a>
+                            </div>
+                        </div>
+                        <br><br>
+                            <div class="card">
+                            <div class="card-header">
+                                مشخصات ارسال
+                            </div>
+                            <div class="card-body">
+                                <form action="{% url 'confirm_order' %}" method='POST'>
+                                    {% csrf_token %}
+                                {{ shipping_form.as_p }}
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <button type='submit'  class='btn btn-sm btn-outline-secondary'>ادامه </button>
+                </form>
+                </center>
+            </div>
+        </div>
+        <br>
+
+
+
+{% endblock content %}
